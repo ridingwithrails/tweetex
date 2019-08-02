@@ -1,6 +1,6 @@
 defmodule Tweetex do
   defp creds do
-    build_params |> OAuther.credentials      
+    Tweetex.Oauth.build_params |> OAuther.credentials      
   end
 
   defp sign(method, resource, params) do
@@ -29,12 +29,5 @@ defmodule Tweetex do
     HTTPoison.get(request.resource, request.header, params: request.params)
   end
 
-  defp build_params do
-    [
-      consumer_key: Application.get_env(:tweetex, :consumer_key),
-      consumer_secret: Application.get_env(:tweetex, :consumer_secret), 
-      token: Application.get_env(:tweetex, :token),
-      token_secret: Application.get_env(:tweetex, :token_secret)
-    ]
-  end
+  
 end
