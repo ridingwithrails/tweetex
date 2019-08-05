@@ -14,6 +14,8 @@ use Mix.Config
 		 config :tweetex, consumer_secret: System.get_env("TWTAPI_CONSUMER_SECRET")
 		 config :tweetex, token: System.get_env("TWTAPI_ACCESS_TOKEN")
 		 config :tweetex, token_secret: System.get_env("TWTAPI_ACCESS_TOKEN_SECRET")
+		 config :tweetex, base_url: System.get_env("TWTAPI_BASE_URL")
+		 config :tweetex, version: System.get_env("TWTAPI_VERSION")
 #
 # and access this configuration in your application as:
 #

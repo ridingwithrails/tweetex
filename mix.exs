@@ -6,7 +6,8 @@ defmodule Tweetex.MixProject do
       app: :tweetex,
       version: "0.1.0",
       elixir: "~> 1.8",
-      start_permanent: Mix.env() == :prod,
+      escript: [main_module: Tweetex],
+      # start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
@@ -27,3 +28,4 @@ defmodule Tweetex.MixProject do
     ]
   end
 end
+# TODO: https://asquera.de/blog/2015-04-10/writing-a-commandline-app-in-elixir/

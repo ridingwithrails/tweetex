@@ -1,7 +1,5 @@
 # TweetEx
 
-**TODO: Add description**
-
 Testing creation of a twitter client using HTTPoison.
 
 ## Installation
