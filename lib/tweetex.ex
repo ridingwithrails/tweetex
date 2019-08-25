@@ -1,44 +1,30 @@
 defmodule Tweetex do
-  import Tweetex.Oauth # allows me to call functions without prefix on it.
-
+  import Tweetex.Client # allows me to call functions without prefix on it.
   @doc """
-  Fetcher takes the options passed in from perform and makes the call to the API
+  main is the start of cli to hit twitter.
 
-  Tweetex.fetcher("get", "statuses", "lookup", [{"id", 1156732168808218624}])
+  Building & Running  the CLI:
 
-  """
-
-  defp fetcher(method, object, action, params \\ []) do
-    resource = resource_builder(object, action)
-    request = build_request(method, resource, params)
-    HTTPoison.get(request.resource, request.header, params: request.params) 
-  end
-
-   @doc """
-    Perform calls twitter with: 
-    method: http method
-    resource: url and path
-    params: options to send 
-
-    Returns {:ok, ${HTTPoison.Response}}
-
-    iex(8)> Tweetex.perform("get", "statuses", "lookup", [{"id", 1156732168808218624}])
+  mix escript.build && ./tweetex --source "namegah"
 
   """
-
-  def perform(method, object, action, params \\ []) do
-    fetcher(method, object, action, params) |> deserializer
+  def main(args) do
+    opts = OptionParser.parse(args, switches: [ method: :string, 
+                                                resource: :string,
+                                                action: :string,   
+                                                # params: :string                                               
+                                                ])
+    IO.inspect opts 
+    str = case opts do
+      {[method: method, resource: resource, action: action],_,_} -> 
+        perform(method, resource, action,[{"id", 1156732168808218624}])
+      {_,_,_} -> "No match"
+    end
+    IO.inspect args 
+    IO.puts str
   end
-
-  def resource_builder(object, action) do
-    Application.get_env(:tweetex, :base_url) <> "/" <> 
-    Application.get_env(:tweetex, :version) <> "/" <>
-      object <> "/" <> "#{action}.json"
-  end
-
-  defp deserializer(payload) do  
-    {:ok, twitter_response } =  payload 
-    twitter_response.body |> Poison.decode
-  end
-
 end
+
+# CLI works like: 
+# mix escript.build
+#
