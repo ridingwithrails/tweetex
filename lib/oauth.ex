@@ -21,5 +21,4 @@ defmodule Tweetex.Oauth do
       token_secret: Application.get_env(:tweetex, :token_secret)
     ]
 	end
-
 end

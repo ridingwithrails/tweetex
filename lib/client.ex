@@ -8,9 +8,16 @@ defmodule Tweetex.Client do
   """
   defp fetcher(method, object, action, params \\ []) do
     resource = resource_builder(object, action)
+    
     request = build_request(method, resource, params)
+    # case method do
     HTTPoison.get(request.resource, request.header, params: request.params) 
-  end
+      
+    #   "post" -> 
+    #     IO.inspect request.params
+    #     HTTPoison.post(request.resource, request.header, Poison.encode(request.params)) 
+    # end
+   end
 
    @doc """
     Perform calls twitter with: 
@@ -20,7 +27,7 @@ defmodule Tweetex.Client do
 
     Returns {:ok, ${HTTPoison.Response}}
 
-    iex(8)> Tweetex.perform("get", "statuses", "lookup", [{"id", 1156732168808218624}])
+    iex(8)> Tweetex.Client.perform("get", "statuses", "lookup", [{"id", 1156732168808218624}])
 
   """
 
@@ -36,6 +43,6 @@ defmodule Tweetex.Client do
 
   defp deserializer(payload) do  
     {:ok, twitter_response } =  payload 
-    twitter_response.body # |> Poison.decode 
+    twitter_response.body  |> Poison.decode |> IO.inspect 
   end
 end

@@ -1,8 +1,8 @@
 # TweetEx
 
-Testing creation of a twitter client using HTTPoison.
+Using HttPoison and Oauther to put together a lightweight twitter client.  
 
-## Installation
+# Development Setup
 Build:
 ```
   ./build.sh
@@ -10,7 +10,7 @@ Build:
 
 Run:
 
-### Add an .env file with the following 
+**Add an .env file with the following**
 
 ```
 # .env
@@ -24,5 +24,41 @@ TWTAPI_ACCESS_TOKEN_SECRET=TOKEN_SECRET
 Then....
 
 ```
-./run.sh
+./run.sh  # Will load up iex console
 ```
+
+# Installation
+
+* Get a shell on the docker container.
+```
+docker run --env-file=.env  -it -v `pwd`:/app elixir-tweet bash
+```
+
+* run 
+```
+mix escript.build # This will generate a binary
+```
+
+You should see a file called tweetex
+
+# Usage
+
+### Commandline Options:
+
+`--method` : Http method for the call.
+`--resource`: The API resource that is needed.
+`--action`: The API action to be taken on the call.
+`--params` : JSON payload to be sent to the API.
+
+
+###Examples:
+
+Grab Favorites: 
+
+```
+./tweetex --method "get" --resource "favorites" --action "list" --params "[\"screen_name\", \"ridingwithrails\"]"
+```
+
+statuses/update.json
+
+./tweetex --method "post" --resource "statuses" --action "update" --params "[\"status\", \"Been thinking about this alog\"]"

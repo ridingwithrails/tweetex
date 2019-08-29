@@ -12,19 +12,25 @@ defmodule Tweetex do
     opts = OptionParser.parse(args, switches: [ method: :string, 
                                                 resource: :string,
                                                 action: :string,   
-                                                # params: :string                                               
+                                                params: :string                                               
                                                 ])
-    IO.inspect opts 
-    str = case opts do
-      {[method: method, resource: resource, action: action],_,_} -> 
-        perform(method, resource, action,[{"id", 1156732168808218624}])
-      {_,_,_} -> "No match"
+    case opts do
+      {[method: method, resource: resource, action: action, params: params],_,_} -> 
+        #perform(method, resource, action,[{"id", 1156732168808218624}]) #TODO: I need to pass this in.
+        params = parse_params(params)
+        perform(method, resource, action, params) #TODO: I need to pass this in.     
+       
+       
+       #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"
+      {_,_,_} -> "In correct params sent"
     end
-    IO.inspect args 
-    IO.puts str
+
+  end
+
+  def parse_params(params) do
+    {:ok, data} = Poison.decode(params)
+    data    
+      |> Enum.chunk_every(2) 
+      |> Enum.map(fn pair -> List.to_tuple(pair) end )
   end
 end
-
-# CLI works like: 
-# mix escript.build
-#
