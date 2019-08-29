@@ -10,13 +10,12 @@ defmodule Tweetex.Client do
     resource = resource_builder(object, action)
     
     request = build_request(method, resource, params)
-    # case method do
-    HTTPoison.get(request.resource, request.header, params: request.params) 
-      
-    #   "post" -> 
-    #     IO.inspect request.params
-    #     HTTPoison.post(request.resource, request.header, Poison.encode(request.params)) 
-    # end
+    case method do
+     "get" -> 
+      HTTPoison.get(request.resource, request.header, params: request.params) 
+     "post" -> 
+        HTTPoison.post(request.resource, [], request.header, params: request.params) 
+     end
    end
 
    @doc """

@@ -61,4 +61,6 @@ Grab Favorites:
 
 statuses/update.json
 
+```
 ./tweetex --method "post" --resource "statuses" --action "update" --params "[\"status\", \"Been thinking about this alog\"]"
+```
