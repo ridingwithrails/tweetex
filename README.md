@@ -59,8 +59,15 @@ Grab Favorites:
 ./tweetex --method "get" --resource "favorites" --action "list" --params "[\"screen_name\", \"ridingwithrails\"]"
 ```
 
-statuses/update.json
+Post a tweet!
 
 ```
 ./tweetex --method "post" --resource "statuses" --action "update" --params "[\"status\", \"Been thinking about this alog\"]"
 ```
+
+Get Trends
+```
+./tweetex --method "get" --resource "trends" --action "available"
+
+```
+

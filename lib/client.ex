@@ -8,7 +8,6 @@ defmodule Tweetex.Client do
   """
   defp fetcher(method, object, action, params \\ []) do
     resource = resource_builder(object, action)
-    
     request = build_request(method, resource, params)
     case method do
      "get" -> 
@@ -40,7 +39,7 @@ defmodule Tweetex.Client do
       object <> "/" <> "#{action}.json"
   end
 
-  defp deserializer(payload) do  
+  defp deserializer(payload) do      
     {:ok, twitter_response } =  payload 
     twitter_response.body  |> Poison.decode |> IO.inspect 
   end
