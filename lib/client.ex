@@ -1,21 +1,24 @@
-defmodule Tweetex.Client do
-	import Tweetex.Oauth
-	@doc """
+defmodule Tweetex.RestApi do
+  @doc """
   Fetcher takes the options passed in from perform and makes the call to the API
 
   Tweetex.fetcher("get", "statuses", "lookup", [{"id", 1156732168808218624}])
 
   """
-  defp fetcher(method, object, action, params \\ []) do
-    resource = resource_builder(object, action)
-    request = build_request(method, resource, params)
+  def fetcher(method, request) do
     case method do
      "get" -> 
-      HTTPoison.get(request.resource, request.header, params: request.params) 
+        HTTPoison.get(request.resource, request.header, params: request.params) 
      "post" -> 
         HTTPoison.post(request.resource, [], request.header, params: request.params) 
      end
    end
+end
+
+defmodule Tweetex.Client do
+  import Tweetex.Oauth
+  import Tweetex.RestApi
+	
 
    @doc """
     Perform calls twitter with: 
@@ -30,7 +33,9 @@ defmodule Tweetex.Client do
   """
 
   def perform(method, object, action, params \\ []) do
-    fetcher(method, object, action, params) |> deserializer
+    resource = resource_builder(object, action)
+    request = build_request(method, resource, params)
+    fetcher(method, request) |> deserializer
   end
 
   def resource_builder(object, action) do
@@ -44,3 +49,4 @@ defmodule Tweetex.Client do
     twitter_response.body  |> Poison.decode |> IO.inspect 
   end
 end
+
