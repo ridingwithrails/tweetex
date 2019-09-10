@@ -1,5 +1,5 @@
 defmodule Tweetex.Oauth do
-	def creds do
+	def creds() do
     build_params |> OAuther.credentials      
   end
 
@@ -13,12 +13,19 @@ defmodule Tweetex.Oauth do
     %{header: [header], params: req_params, method: method, resource: resource}   
 	end
 	
-	defp build_params do
+	defp build_params() do
     [
       consumer_key: Application.get_env(:tweetex, :consumer_key),
       consumer_secret: Application.get_env(:tweetex, :consumer_secret), 
       token: Application.get_env(:tweetex, :token),
       token_secret: Application.get_env(:tweetex, :token_secret)
     ]
-	end
+  end
+  
+  def resource_builder(object, action) do
+    Application.get_env(:tweetex, :base_url) <> "/" <> 
+    Application.get_env(:tweetex, :version) <> "/" <>
+      object <> "/" <> "#{action}.json"
+  end
+
 end

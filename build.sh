@@ -1,1 +1,2 @@
-docker build --no-cache -t elixir-tweet .
+docker build --no-cache \
+	-t elixir-tweet .
