@@ -12,7 +12,7 @@ defmodule Tweetex do
   mix escript.build && ./tweetex --source "namegah"
 
   """
-  def main(args) do    
+  def main(args) do        
     opts = OptionParser.parse(args, switches: [ method: :string, 
                                                 resource: :string,
                                                 action: :string,   
@@ -54,7 +54,7 @@ defmodule Tweetex do
     ====iex(8)> Tweetex.perform("get", "statuses", "lookup", [{"id", 1156732168808218624}])
     ==={:ok, ${HTTPoison.Response}}
   """
-  def perform(method, object, action, params \\ []) do
+  def perform(method, object, action, params \\ []) do    
     resource = resource_builder(object, action)
     request = build_request(method, resource, params)
     api_client.fetcher(method, request) |> deserializer
@@ -62,6 +62,6 @@ defmodule Tweetex do
 
   defp deserializer(payload) do      
     {:ok, twitter_response } =  payload 
-    twitter_response.body  |> Poison.decode |> IO.inspect 
+    twitter_response.body  |> Poison.decode
   end
 end

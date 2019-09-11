@@ -17,9 +17,12 @@ config :tweetex, token_secret: System.get_env("TWTAPI_ACCESS_TOKEN_SECRET")
 config :tweetex, base_url: System.get_env("TWTAPI_BASE_URL")
 config :tweetex, version: System.get_env("TWTAPI_VERSION")
 
-# config.exs
 
-config :tweetex, client: Tweetex.Client
+if Mix.env == :test do
+	config :tweetex, client: Tweetex.ClientBehaviorMock
+else 
+	config :tweetex, client: Tweetex.Client
+end
 
 
 

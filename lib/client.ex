@@ -13,6 +13,6 @@ defmodule Tweetex.Client do
      "post" -> 
         HTTPoison.post(request.resource, [], request.header, params: request.params) 
      end
-   end
+   end   
 end
 
