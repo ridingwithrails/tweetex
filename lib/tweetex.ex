@@ -15,15 +15,18 @@ defmodule Tweetex do
   def main(args) do
     opts = OptionParser.parse(args, switches: [ method: :string,
                                                 resource: :string,
-                                                action: :string,
+                                                type: :string, 
+                                                action: :string,                                                
                                                 params: :string
                                                 ])
     case opts do
       {[method: method, resource: resource, action: action, params: params],_,_} ->
         #perform(method, resource, action,[{"id", 1156732168808218624}]) #TODO: I need to pass this in.
         performer(method, resource, action, params)
+      {[method: method, resource: resource, type: type, action: action, params: params],_,_} ->
+        uploader(method, resource, action, params)
       {[method: method, resource: resource, action: action],_,_} ->
-        performer(method, resource, action)
+        performer(method, resource, action)        
        #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"
       {_,_,_} -> "In correct params sent"
     end
@@ -33,6 +36,13 @@ defmodule Tweetex do
     params = parse_params(params)
     perform(method, resource, action, params)
   end
+  
+
+  def uploader(method, resource, action, params \\ "") do 
+    params = parse_params(params)
+    upload(method, resource, action, params)
+  end
+
 
   @doc """
   Formats params that comes in to be sent to api
@@ -68,6 +78,10 @@ defmodule Tweetex do
     resource = resource_builder(object, action)
     request = build_request(method, resource, params)
     api_client.fetcher(method, request) |> deserializer
+  end
+
+  def upload(method, object, action, params \\ []) do
+    :here 
   end
 
   defp deserializer(payload) do
