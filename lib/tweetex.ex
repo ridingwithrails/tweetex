@@ -81,7 +81,7 @@ defmodule Tweetex do
   end
 
   def upload(method, object, action, params \\ []) do
-    :here 
+    
   end
 
   defp deserializer(payload) do
