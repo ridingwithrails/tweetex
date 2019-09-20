@@ -14,7 +14,7 @@ defmodule Tweetex.Upload do
 		{:ok, final_file} = File.open("./bigfinal.mp4", [:write])
 		{:ok, files} = File.ls("./lib/output/") 
 		file_count = Enum.count(files) 
-		filename_range = (0..(file_count -1) )
+		filename_range = (0..(file_count - 1) )
 		Enum.each(filename_range, fn file_name ->
 			{:ok, file} = File.read("./lib/output/#{file_name}.tmp")
 			IO.binwrite(final_file, file)			

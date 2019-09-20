@@ -26,8 +26,7 @@ app-*.tar
 
 .formatter.exs
 
-test.mp4
-test-chunks* 
+*mp4
 .env
 tweetex
 .DS_Store
