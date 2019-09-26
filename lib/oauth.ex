@@ -11,7 +11,14 @@ defmodule Tweetex.Oauth do
     signature = sign(method, resource, params) 
     {header, req_params} = OAuther.header(signature)
     %{header: [header], params: req_params, method: method, resource: resource}   
-	end
+  end
+  
+  def build_request_media(method, resource, params) do
+    signature = sign(method, resource, params) 
+    {header, req_params} = OAuther.header(signature)
+    # header = header |> Tuple.append("Content-Type") |> Tuple.append( "video/mp4")    
+    %{header: [header], params: req_params, method: method, resource: resource}  
+  end
   
   def resource_builder(object, action) do
     Application.get_env(:tweetex, :base_url) <> "/" <> 

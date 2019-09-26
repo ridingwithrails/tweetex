@@ -10,7 +10,7 @@ defmodule Tweetex.Upload do
 	@method "post"
 
 # Returns 
-#  body: "{\"media_id\":1176327092268519424,\"media_id_string\":\"1176327092268519424\",\"expires_after_secs\":86400}",
+# body: "{\"media_id\":1177054564421255168,\"media_id_string\":\"1177054564421255168\",\"expires_after_secs\":86399}"
 
 	def init(file) do
 		{:ok, %{size: size} } = File.stat("./stage/#{file}")
@@ -27,35 +27,58 @@ defmodule Tweetex.Upload do
 		uploader("post", request)
 	end
 
+	def finalize(media_id) do
+		{:ok, init_params} =  [ 			
+			"media_id", Integer.to_string(media_id),
+			"command", "FINALIZE"
+			] |> Poison.encode 
+		params = parse_params(init_params)
+		resource = upload_resource_builder("media", "upload")
+		request = build_request("post", resource, params)
+		uploader("post", request)		
+	end
+
+	def status(media_id) do
+		{:ok, init_params} =  [ 			
+			"command", "STATUS",
+			"media_id", Integer.to_string(media_id)			
+			] |> Poison.encode 
+		params = parse_params(init_params)
+		resource = upload_resource_builder("media", "upload")
+		request = build_request("get", resource, params)
+		uploader("get", request)
+
+	end
+
 	def upload_resource_builder(object, action) do
     @host <> "/" <> @version <> "/" <> object <> "/" <> "#{action}.json"
 	end
 	
 	def split_append(media_id, file) do
-		File.stream!("#{@stage}/#{file}", [], 5120) 
-		|> Stream.chunk_every(5120)  
+		File.stream!("#{@stage}/#{file}", [],  4999990) 
+		|> Stream.chunk_every(4999990)  
 		|> Stream.with_index 
 		|> Stream.each( fn({data, chunk_id}) -> append(media_id, data, chunk_id) end ) 
 		|> Stream.run()
 	end
 
 
-	def append(media_id, file_data, segment) do
+	def append(media_id, file_data, segment) do		
+		{:ok, data} = File.read("./lib/output/#{file_data}")
 		{:ok, append_params} =  [ 
-			"media_id", media_id, 
-			"media", file_data,
+			"media_id", media_id, 			
 			"segment_index", segment,			
 			"command", "APPEND"
 			] |> Poison.encode 
 		params = parse_params(append_params)
+		IO.inspect params
 		resource = upload_resource_builder("media", "upload")
-		request = build_request("post", resource, params)	
-		{:ok, file_data} = File.read("./lib/output/1.tmp")
-		# form = {:multipart, [{"media", file_data, {"form-data", [ {"media_id", media_id}, {:filename, "O.tmp"}]}, []}]}
-		form = {:multipart, []}
-		# IO.inspect form
-		# IO.inspect request 
-		 uploader("post", form, request)
+		request = build_request_media("post", resource, params)	
+		form = {:multipart, [
+				{"media", data }, 
+				{"media_id", Integer.to_string(media_id)}, 				
+			]}
+		HTTPoison.post(request.resource, form, request.header, params: request.params) |> IO.inspect		
 	end
 
 	def split(file)  do

@@ -15,12 +15,12 @@ defmodule Tweetex.Client do
      end
    end   
 
-   def uploader(method, body \\ {}, request) do
+   def uploader(method, request) do
      case method do
        "get" -> 
-         "Nothing here"
+         HTTPoison.get(request.resource, request.header, params: request.params) 
        "post" -> 
-         HTTPoison.post(request.resource, body, request.header, params: request.params) 
+         HTTPoison.post(request.resource, [], request.header, params: request.params) 
       end
    end
 end
