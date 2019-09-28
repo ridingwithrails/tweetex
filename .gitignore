@@ -31,3 +31,4 @@ app-*.tar
 tweetex
 .DS_Store
 lib/output
+/tmp
