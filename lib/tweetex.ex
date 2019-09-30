@@ -2,6 +2,7 @@ defmodule Tweetex do
   #import Tweetex.Client # allows me to call functions without prefix on it.
   import Tweetex.Oauth
   import Tweetex.Helpers
+  import Tweetex.Payload
 
   def api_client(), do: Application.get_env(:tweetex, :client)
 
@@ -63,10 +64,5 @@ defmodule Tweetex do
 
   def upload(method, object, action, params \\ []) do
     
-  end
-
-  defp deserializer(payload) do
-    {:ok, twitter_response } =  payload
-    twitter_response.body  |> Poison.decode
   end
 end

@@ -2,6 +2,8 @@ defmodule Tweetex.Upload do
 	import Tweetex.Oauth 
 	import Tweetex.Helpers
 	import Tweetex.Client 
+	import Tweetex.Payload
+	import Tweetex.FileManager
 
 	@stage  "./stage"
 	@output "./lib/output"
@@ -11,7 +13,7 @@ defmodule Tweetex.Upload do
 
 # Returns 
 # body: "{\"media_id\":1177054564421255168,\"media_id_string\":\"1177054564421255168\",\"expires_after_secs\":86399}"
-
+# 1178102583539298304
 	def init(file) do
 		{:ok, %{size: size} } = File.stat("./stage/#{file}")
 		{:ok, init_params} =  [ 
@@ -24,7 +26,7 @@ defmodule Tweetex.Upload do
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("post", resource, params)
-		uploader("post", request)
+		uploader("post", request) |> IO.inspect 
 	end
 
 	def finalize(media_id) do
@@ -35,13 +37,13 @@ defmodule Tweetex.Upload do
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("post", resource, params)
-		uploader("post", request)		
+		uploader("post", request)	|> deserializer 	
 	end
 
 	def status(media_id) do
 		{:ok, init_params} =  [ 			
 			"command", "STATUS",
-			"media_id", Integer.to_string(media_id)			
+			"media_id", media_id		
 			] |> Poison.encode 
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
@@ -50,34 +52,38 @@ defmodule Tweetex.Upload do
 
 	end
 
-	def upload_resource_builder(object, action) do
-    @host <> "/" <> @version <> "/" <> object <> "/" <> "#{action}.json"
-	end
-	
-	def split_append(media_id, file) do
-		File.stream!("#{@stage}/#{file}", [],  4999990) 
-		|> Stream.chunk_every(4999990)  
-		|> Stream.with_index 
-		|> Stream.each( fn({data, chunk_id}) -> append(media_id, data, chunk_id) end ) 
-		|> Stream.run()
+	def split_append( file) do
+		media_id = "1178508721850220549"
+		IO.puts "Spliting #{file} into chunks"
+		output_dir = split(file) 		
+		get_range(output_dir)
+			|> Enum.each(fn segment -> append(media_id, segment, output_dir) end)
 	end
 
 
-	def append(media_id, file_data, segment) do		
-		{:ok, data} = File.read("./lib/output/#{file_data}")
+	def append(media_id, segment, output_dir) do		
+		file = read(output_dir, segment) 
 		{:ok, append_params} =  [ 
-			"media_id", media_id, 			
-			"segment_index", segment,			
-			"command", "APPEND"
+			"media_id", media_id, 	
+			"command", "APPEND",
+			"segment_index", segment,				
 			] |> Poison.encode 
-		params = parse_params(append_params)
-		IO.inspect params
+		params = parse_params(append_params)		
 		resource = upload_resource_builder("media", "upload")
-		request = build_request_media("post", resource, params)	
-		form = {:multipart, [
-				{"media", data }, 
-				{"media_id", Integer.to_string(media_id)}, 				
-			]}
-		HTTPoison.post(request.resource, form, request.header, params: request.params) |> IO.inspect		
+		request = build_request("post", resource, params)	
+		form = [					
+			{"media", file,			
+				{"form-data", [
+					{"name", "\"media\"" }, 
+					{"filename", "\"#{segment}.tmp\""}
+					]},
+			[] 
+			},					
+		]	
+		HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect		
+	end
+
+	defp upload_resource_builder(object, action) do
+    @host <> "/" <> @version <> "/" <> object <> "/" <> "#{action}.json"
 	end
 end

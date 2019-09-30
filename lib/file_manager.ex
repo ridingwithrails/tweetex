@@ -11,6 +11,7 @@ defmodule Tweetex.FileManager do
 					IO.binwrite(file, data)
 				end) 
 			|> Stream.run()
+		  output_dir		
 	end
 
 	def split_directory(file) do
@@ -21,14 +22,26 @@ defmodule Tweetex.FileManager do
 	end
 
 	def join(finalfile) do
-		{:ok, finished_file} = File.open("./#{finalfile}.mp4", [:write])
-		{:ok, files} = File.ls("#{@output}") 
-		file_count = Enum.count(files) 
-		filename_range = (0..(file_count - 1) )
-		Enum.each(filename_range, fn file_name ->
-			{:ok, file} = File.read("#{@output}/#{file_name}.tmp")
-			IO.binwrite(finished_file, file)			
-		end)
+		{:ok, finished_file} = File.open("./#{finalfile}", [:write])
+		output_dir = "#{@output}/#{finalfile}"
+		get_range(output_dir)
+			|> Enum.each(fn file_name -> stitch(finished_file, output_dir, file_name) end)
 		File.close(finished_file)
+	end
+
+	def stitch(final_file, output_dir, chunk )do
+		file = read(output_dir, chunk)
+		IO.binwrite(final_file, file)	
+	end
+
+	def read(output_dir, chunk) do
+		{:ok, file} = File.read("#{output_dir}/#{chunk}.tmp")
+		file
+	end
+
+	def get_range(path) do	
+		{:ok, files} = File.ls(path) 
+		file_count = Enum.count(files) 
+		(0..(file_count - 1) )
 	end
 end
