@@ -18,6 +18,7 @@ defmodule Tweetex.Upload do
 		{:ok, %{size: size} } = File.stat("./stage/#{file}")
 		{:ok, init_params} =  [ 
 			"media_type", "video/mp4", 
+			"media_category", "tweet_video",
 			"resource", "media",
 			"total_bytes", size,
 			"action", "upload", 
@@ -52,35 +53,39 @@ defmodule Tweetex.Upload do
 
 	end
 
-	def split_append( file) do
-		media_id = "1178508721850220549"
+	def split_append(media_id, file) do		
 		IO.puts "Spliting #{file} into chunks"
 		output_dir = split(file) 		
 		get_range(output_dir)
 			|> Enum.each(fn segment -> append(media_id, segment, output_dir) end)
+		File.rm_rf output_dir	
 	end
 
 
 	def append(media_id, segment, output_dir) do		
-		file = read(output_dir, segment) 
+		file = read(output_dir, segment) 		
 		{:ok, append_params} =  [ 
-			"media_id", media_id, 	
+			"media_id", media_id, 				
 			"command", "APPEND",
 			"segment_index", segment,				
 			] |> Poison.encode 
-		params = parse_params(append_params)		
+		 params = parse_params(append_params)		
 		resource = upload_resource_builder("media", "upload")
-		request = build_request("post", resource, params)	
-		form = [					
-			{"media", file,			
+		request = build_request("post", resource, params)		
+		form = [
+			{"media", file, 
 				{"form-data", [
-					{"name", "\"media\"" }, 
-					{"filename", "\"#{segment}.tmp\""}
-					]},
-			[] 
-			},					
-		]	
-		HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect		
+					{"name", "\"media\""},
+					{"filename", "\"#{segment}.tmp\""},
+					{"media_id", media_id}, 				
+					{"command", "APPEND"},
+					{"segment_index", segment}]},
+			[{"Content-Type", "video/mp4"}]
+			}
+		]		
+		
+		# HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect			
+		HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect
 	end
 
 	defp upload_resource_builder(object, action) do
