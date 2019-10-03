@@ -51,7 +51,7 @@ You should see a file called tweetex
 --params # JSON payload to be sent to the API.
 ```
 
-###Examples:
+### Examples:
 
 Grab Favorites: 
 
