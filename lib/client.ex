@@ -20,7 +20,7 @@ defmodule Tweetex.Client do
        "get" -> 
          HTTPoison.get(request.resource, request.header, params: request.params) 
        "post" -> 
-         HTTPoison.post(request.resource, form, request.header, params: request.params) 
+        HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params)
       end
    end
 end

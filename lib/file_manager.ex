@@ -6,12 +6,12 @@ defmodule Tweetex.FileManager do
 		output_dir = split_directory(file)
 		File.stream!("#{@stage}/#{file}", [],  4999990) 			 
 			|> Stream.with_index 
-			|> Stream.each( 
+			|> Stream.each(		
 					fn({data, chunk_id}) -> {:ok, file} = File.open("#{output_dir}/#{chunk_id}.tmp",[:write] )
-					IO.binwrite(file, data)
-				end) 
+						IO.binwrite(file, data)
+					end) 
 			|> Stream.run()
-		  output_dir		
+		output_dir		
 	end
 
 	def split_directory(file) do

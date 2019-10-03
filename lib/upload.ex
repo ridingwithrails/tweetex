@@ -27,7 +27,7 @@ defmodule Tweetex.Upload do
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("post", resource, params)
-		uploader("post", request) |> IO.inspect 
+		uploader("post", request) |> body 
 	end
 
 	def finalize(media_id) do
@@ -38,7 +38,7 @@ defmodule Tweetex.Upload do
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("post", resource, params)
-		uploader("post", request)	|> deserializer 	
+		uploader("post", request)	|> body 	
 	end
 
 	def status(media_id) do
@@ -49,8 +49,7 @@ defmodule Tweetex.Upload do
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("get", resource, params)
-		uploader("get", request)
-
+		uploader("get", request) |> body
 	end
 
 	def split_append(media_id, file) do		
@@ -61,9 +60,16 @@ defmodule Tweetex.Upload do
 		File.rm_rf output_dir	
 	end
 
+	def split(file, media_id) do 		
+		File.stream!("#{@stage}/#{file}", [],  4999990) 			 
+			|> Stream.with_index 
+			|> Stream.each(		
+					fn({data, segment}) -> append(media_id, segment, data)
+					end) 
+			|> Stream.run()
+	end
 
-	def append(media_id, segment, output_dir) do		
-		file = read(output_dir, segment) 		
+	def append(media_id, segment, data) do		 		
 		{:ok, append_params} =  [ 
 			"media_id", media_id, 				
 			"command", "APPEND",
@@ -73,19 +79,17 @@ defmodule Tweetex.Upload do
 		resource = upload_resource_builder("media", "upload")
 		request = build_request("post", resource, params)		
 		form = [
-			{"media", file, 
+			{"media", IO.iodata_to_binary(data), 
 				{"form-data", [
 					{"name", "\"media\""},
-					{"filename", "\"#{segment}.tmp\""},
+					{"filename", "\"#{segment}.mp4\""},
 					{"media_id", media_id}, 				
 					{"command", "APPEND"},
 					{"segment_index", segment}]},
 			[{"Content-Type", "video/mp4"}]
 			}
 		]		
-		
-		# HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect			
-		HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params) |> IO.inspect
+		uploader("post", request, form) |> status_code
 	end
 
 	defp upload_resource_builder(object, action) do
