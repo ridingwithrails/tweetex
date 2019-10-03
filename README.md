@@ -44,12 +44,12 @@ You should see a file called tweetex
 # Usage
 
 ### Commandline Options:
-
-  `--method # Http method for the call.`
-  `--resource # The API resource that is needed.`
-  `--action # The API action to be taken on the call.`
-  `--params # JSON payload to be sent to the API.`
-
+```
+--method # Http method for the call.
+--resource # The API resource that is needed.`
+--action # The API action to be taken on the call.
+--params # JSON payload to be sent to the API.
+```
 
 ###Examples:
 
