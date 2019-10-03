@@ -6,7 +6,6 @@ defmodule Tweetex.Upload do
 	import Tweetex.FileManager
 
 	@stage  "./stage"
-	@output "./lib/output"
 	@host "https://upload.twitter.com"
 	@version "1.1"
 	@method "post"
@@ -26,8 +25,8 @@ defmodule Tweetex.Upload do
 			] |> Poison.encode 
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
-		request = build_request("post", resource, params)
-		uploader("post", request) |> body 
+		request = build_request(@method, resource, params)
+		uploader(@method, request) |> body 
 	end
 
 	def finalize(media_id) do
@@ -37,8 +36,8 @@ defmodule Tweetex.Upload do
 			] |> Poison.encode 
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
-		request = build_request("post", resource, params)
-		uploader("post", request)	|> body 	
+		request = build_request(@method, resource, params)
+		uploader(@method, request)	|> body 	
 	end
 
 	def status(media_id) do
@@ -77,7 +76,7 @@ defmodule Tweetex.Upload do
 			] |> Poison.encode 
 		 params = parse_params(append_params)		
 		resource = upload_resource_builder("media", "upload")
-		request = build_request("post", resource, params)		
+		request = build_request(@method, resource, params)		
 		form = [
 			{"media", IO.iodata_to_binary(data), 
 				{"form-data", [
@@ -89,7 +88,7 @@ defmodule Tweetex.Upload do
 			[{"Content-Type", "video/mp4"}]
 			}
 		]		
-		uploader("post", request, form) |> status_code
+		uploader(@method, request, form) |> status_code
 	end
 
 	defp upload_resource_builder(object, action) do
