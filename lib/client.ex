@@ -6,21 +6,29 @@ defmodule Tweetex.Client do
   Tweetex.Client.fetcher("get", "statuses", "lookup", [{"id", 1156732168808218624}])
 
   """
-  def fetcher(method, request) do
+  # def fetcher(method, request) do
+  #   case method do
+  #    "get" -> 
+  #       HTTPoison.get(request.resource, request.header, params: request.params) 
+  #    "post" -> 
+  #       HTTPoison.post(request.resource, [], request.header, params: request.params) 
+  #    end
+  #  end   
+  def fetcher(method, request, form \\ []) do
     case method do
-     "get" -> 
-        HTTPoison.get(request.resource, request.header, params: request.params) 
-     "post" -> 
-        HTTPoison.post(request.resource, [], request.header, params: request.params) 
+      "get" -> 
+         HTTPoison.get(request.resource, request.header, params: request.params) 
+      "post" ->           
+         HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params)
      end
-   end   
+  end
 
    def uploader(method, request, form \\ []) do
      case method do
        "get" -> 
-         HTTPoison.get(request.resource, request.header, params: request.params) 
-       "post" -> 
-        HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params)
+          HTTPoison.get(request.resource, request.header, params: request.params) 
+       "post" ->           
+          HTTPoison.post(request.resource, {:multipart, form}, request.header, params: request.params)
       end
    end
 end

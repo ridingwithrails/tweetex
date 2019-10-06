@@ -9,6 +9,17 @@ defmodule Tweetex.Helpers do
     []
 
   """
+  def media_category(file) do
+    file_type = MIME.from_path(file)
+    cats = %{
+      "video/mp4" => "tweet_video",
+      "image/jpg" => "tweet_image",
+      "image/png" => "tweet_image",
+      "image/gif" => "tweet_gif",
+    }
+    cats[file_type]
+  end
+
 
   def parse_params(params \\ " ") do
     case Poison.decode(params) do

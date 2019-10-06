@@ -24,6 +24,7 @@ defmodule Tweetex.MixProject do
       {:httpoison, "~> 1.4"},
       {:poison, "~> 3.1"},
       {:oauther, "~> 1.1"},
+      {:mime, "~> 1.2"},
       {:mox, "~> 0.5", only: :test}      
     ]
   end

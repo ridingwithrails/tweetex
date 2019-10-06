@@ -10,23 +10,19 @@ defmodule Tweetex.Upload do
 	@version "1.1"
 	@method "post"
 
-# Returns 
-# body: "{\"media_id\":1177054564421255168,\"media_id_string\":\"1177054564421255168\",\"expires_after_secs\":86399}"
-# 1178102583539298304
 	def init(file) do
 		{:ok, %{size: size} } = File.stat("./stage/#{file}")
 		{:ok, init_params} =  [ 
-			"media_type", "video/mp4", 
-			"media_category", "tweet_video",
-			"resource", "media",
-			"total_bytes", size,
-			"action", "upload", 
+			"media_type", MIME.from_path("#{file}"), 
+		  "media_category", media_category("#{file}"),			
+			"total_bytes", size,			
 			"command", "INIT"
 			] |> Poison.encode 
 		params = parse_params(init_params)
 		resource = upload_resource_builder("media", "upload")
 		request = build_request(@method, resource, params)
-		uploader(@method, request) |> body 
+		# uploader(@method, request) |> IO.inspect 
+		HTTPoison.post(request.resource, [], request.header, params: request.params) |> IO.inspect
 	end
 
 	def finalize(media_id) do

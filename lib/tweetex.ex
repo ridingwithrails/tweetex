@@ -59,7 +59,7 @@ defmodule Tweetex do
   def perform(method, object, action, params \\ []) do
     resource = resource_builder(object, action)
     request = build_request(method, resource, params)
-    api_client.fetcher(method, request) |> body
+    api_client.fetcher(method, request) |> body 
   end
 
   def upload(method, object, action, params \\ []) do

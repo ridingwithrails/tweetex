@@ -24,6 +24,7 @@ else
 	config :tweetex, client: Tweetex.Client
 end
 
+config :mime, :types, %{"application/vnd.api+json" => ["json-api"]}
 
 
 

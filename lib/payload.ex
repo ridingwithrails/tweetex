@@ -1,12 +1,12 @@
 defmodule Tweetex.Payload do
-	def body(payload) do
+  def body(payload) do    
     {:ok, twitter_response } =  payload
-    twitter_response.body  |> Poison.decode
+    twitter_response.body  |> Poison.decode |> IO.inspect
   end
 
   def status_code(payload) do
     {:ok, twitter_response } =  payload
-    twitter_response.status_code
+    twitter_response.status_code 
   end
 end
  

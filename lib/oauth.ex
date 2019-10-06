@@ -14,7 +14,7 @@ defmodule Tweetex.Oauth do
   end
   
   def resource_builder(object, action) do
-    Application.get_env(:tweetex, :base_url) <> "/" <> 
+    Application.get_env(:tweetex, :base_url)  <> 
     Application.get_env(:tweetex, :version) <> "/" <>
       object <> "/" <> "#{action}.json"
   end
