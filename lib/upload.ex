@@ -6,7 +6,7 @@ defmodule Tweetex.Upload do
 	import Tweetex.FileManager
 
 	@stage  "./stage"
-	@host "https://upload.twitter.com"
+	@host "https://upload.twitter.com/"
 	@version "1.1"
 	@method "post"
 
@@ -19,10 +19,10 @@ defmodule Tweetex.Upload do
 			"command", "INIT"
 			] |> Poison.encode 
 		params = parse_params(init_params)
-		resource = upload_resource_builder("media", "upload")
-		request = build_request(@method, resource, params)
-		# uploader(@method, request) |> IO.inspect 
-		HTTPoison.post(request.resource, [], request.header, params: request.params) |> IO.inspect
+		resource = resource_builder("media", "upload", @host)
+		request = build_request(@method, resource, params)		
+		# HTTPoison.post(request.resource, [], request.header, params: request.params) |> body
+		fetcher(@method, request)	|> body 
 	end
 
 	def finalize(media_id) do
@@ -31,9 +31,9 @@ defmodule Tweetex.Upload do
 			"command", "FINALIZE"
 			] |> Poison.encode 
 		params = parse_params(init_params)
-		resource = upload_resource_builder("media", "upload")
+		resource = resource_builder("media", "upload", @host)
 		request = build_request(@method, resource, params)
-		uploader(@method, request)	|> body 	
+		fetcher(@method, request)	|> body 	
 	end
 
 	def status(media_id) do
@@ -42,9 +42,9 @@ defmodule Tweetex.Upload do
 			"media_id", media_id		
 			] |> Poison.encode 
 		params = parse_params(init_params)
-		resource = upload_resource_builder("media", "upload")
+		resource = resource_builder("media", "upload", @host)
 		request = build_request("get", resource, params)
-		uploader("get", request) |> body
+		fetcher("get", request) |> body
 	end
 
 	def split_append(media_id, file) do		
@@ -71,7 +71,7 @@ defmodule Tweetex.Upload do
 			"segment_index", segment,				
 			] |> Poison.encode 
 		 params = parse_params(append_params)		
-		resource = upload_resource_builder("media", "upload")
+		resource = resource_builder("media", "upload", @host)
 		request = build_request(@method, resource, params)		
 		form = [
 			{"media", IO.iodata_to_binary(data), 
@@ -84,10 +84,6 @@ defmodule Tweetex.Upload do
 			[{"Content-Type", "video/mp4"}]
 			}
 		]		
-		uploader(@method, request, form) |> status_code
-	end
-
-	defp upload_resource_builder(object, action) do
-    @host <> "/" <> @version <> "/" <> object <> "/" <> "#{action}.json"
+		fetcher(@method, request, form) |> status_code
 	end
 end

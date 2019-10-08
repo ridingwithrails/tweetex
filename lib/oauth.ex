@@ -13,10 +13,17 @@ defmodule Tweetex.Oauth do
     %{header: [header], params: req_params, method: method, resource: resource}   
   end
   
-  def resource_builder(object, action) do
-    Application.get_env(:tweetex, :base_url)  <> 
-    Application.get_env(:tweetex, :version) <> "/" <>
-      object <> "/" <> "#{action}.json"
+  def resource_builder(object, action, host \\ nil) do
+    if  host == nil  do     
+      Application.get_env(:tweetex, :base_url) <> resource_fragment(object, action)
+    else 
+      host <> resource_fragment(object, action)
+    end    
+  end
+
+  defp resource_fragment(object, action) do
+    Application.get_env(:tweetex, :version) <> "/" 
+        <> object <> "/" <> "#{action}.json"
   end
   
 	defp build_params() do
