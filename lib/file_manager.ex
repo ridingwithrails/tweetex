@@ -39,6 +39,24 @@ defmodule Tweetex.FileManager do
 		file
 	end
 
+	@doc """
+
+	extension returns file extension from a file.
+
+	iex(1)> Tweetex.FileManager.extension "cookoo.png"
+	"png"
+
+	iex(1)> Tweetex.FileManager.extension "cookoo.gif"
+	"gif"
+
+	iex(1)> Tweetex.FileManager.extension "cookoo"
+	"cookoo"
+
+	"""
+	def extension(file) do
+		String.split(file, ".")	|> List.last
+	end
+
 	def get_range(path) do	
 		{:ok, files} = File.ls(path) 
 		file_count = Enum.count(files) 

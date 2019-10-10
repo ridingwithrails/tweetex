@@ -30,18 +30,19 @@ defmodule Tweetex do
       {[method: method, resource: resource, action: action],_,_} ->
         performer(method, resource, action)        
        #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"
-      {_,_,_} -> "In correct params sent"
+       {[params: params],_,_} -> String.split(params, " ") |> IO.inspect
+       {_,_,_} -> "In correct params sent"
     end
   end
 
-  def performer(method, resource, action, params \\ "") do
-    params = parse_params(params)
+  def performer(method, resource, action, params \\ "") do    
+    params = tuple_pairs(params)    
     perform(method, resource, action, params)
   end
   
 
   def uploader(method, resource, action, params \\ "") do 
-    params = parse_params(params)
+    params = tuple_pairs(params)
     upload(method, resource, action, params)
   end
 

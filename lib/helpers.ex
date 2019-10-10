@@ -9,26 +9,38 @@ defmodule Tweetex.Helpers do
     []
 
   """
-  def media_category(file) do
-    file_type = MIME.from_path(file)
-    cats = %{
-      "video/mp4" => "tweet_video",
-      "image/jpg" => "tweet_image",
-      "image/png" => "tweet_image",
-      "image/gif" => "tweet_gif",
-    }
-    cats[file_type]
+ @type_map %{
+  "video/mp4" => "tweet_video",
+  "image/jpg" => "tweet_image",
+  "image/png" => "tweet_image",
+  "image/gif" => "tweet_gif",
+}
+
+  def media_category(file) do    
+    @type_map[MIME.from_path(file)]
   end
 
+  def tuple_pairs(params \\"") do
+    cond do 
+      params == "" -> []
+      true -> params 
+        |> String.split("=")
+        |> transform_to_tuple
+    end    
+  end
 
   def parse_params(params \\ " ") do
     case Poison.decode(params) do
       {:ok, data} ->
-        data
-        |> Enum.chunk_every(2)
-        |> Enum.map(fn pair -> List.to_tuple(pair) end )
+        transform_to_tuple(data)
       {:error, _, _ } ->
         []
     end
+  end
+
+  def transform_to_tuple(data) do
+    data
+    |> Enum.chunk_every(2)
+    |> Enum.map(fn pair -> List.to_tuple(pair) end )
   end
 end

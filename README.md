@@ -56,13 +56,13 @@ You should see a file called tweetex
 Grab Favorites: 
 
 ```
-./tweetex --method "get" --resource "favorites" --action "list" --params "[\"screen_name\", \"ridingwithrails\"]"
+./tweetex --method "get" --resource "favorites" --action "list" --params "screen_name=ridingwithrails"
 ```
 
 Post a tweet!
 
 ```
-./tweetex --method "post" --resource "statuses" --action "update" --params "[\"status\", \"Been thinking about this alog\"]"
+./tweetex --method "post" --resource "statuses" --action "update" --params "status=Been thinking about this alog"
 ```
 
 Get Trends
