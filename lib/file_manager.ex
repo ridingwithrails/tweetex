@@ -14,6 +14,14 @@ defmodule Tweetex.FileManager do
 		output_dir		
 	end
 
+	def split_append(media_id, file) do		
+		IO.puts "Spliting #{file} into chunks"
+		output_dir = split(file) 		
+		get_range(output_dir)
+			|> Enum.each(fn segment -> IO.puts segment end)
+		File.rm_rf output_dir	
+	end
+
 	def split_directory(file) do
 		case File.mkdir("#{@output}/#{file}") do
 			:ok -> "#{@output}/#{file}"

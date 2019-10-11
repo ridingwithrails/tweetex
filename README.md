@@ -43,7 +43,7 @@ You should see a file called tweetex
 
 # Usage
 
-### Commandline Options:
+## Commandline Options:
 ```
 --method # Http method for the call.
 --resource # The API resource that is needed.`
@@ -51,7 +51,7 @@ You should see a file called tweetex
 --params # JSON payload to be sent to the API.
 ```
 
-### Examples:
+## Examples:
 
 Grab Favorites: 
 
@@ -70,4 +70,13 @@ Get Trends
 ./tweetex --method "get" --resource "trends" --action "available"
 
 ```
+
+### Upload Media 
+
+The command will upload the file in chunks and then return a media id for use in a tweet.
+
+```
+./tweetex --method "post" --resource "media" --action "upload" --file "test.mp4"
+```
+
 

@@ -17,15 +17,14 @@ defmodule Tweetex do
   def main(args) do
     opts = OptionParser.parse(args, switches: [ method: :string,
                                                 resource: :string,
-                                                type: :string, 
+                                                file: :string, 
                                                 action: :string,                                                
                                                 params: :string
                                                 ])
     case opts do
-      {[method: method, resource: resource, action: action, params: params],_,_} ->
-        #perform(method, resource, action,[{"id", 1156732168808218624}]) #TODO: I need to pass this in.
+      {[method: method, resource: resource, action: action, params: params],_,_} ->        
         performer(method, resource, action, params)
-      {[method: method, resource: resource, type: type, action: action, params: params],_,_} ->
+      {[method: method, resource: resource, file: type, action: action, params: params],_,_} ->
         uploader(method, resource, action, params)
       {[method: method, resource: resource, action: action],_,_} ->
         performer(method, resource, action)        
@@ -41,9 +40,10 @@ defmodule Tweetex do
   end
   
 
-  def uploader(method, resource, action, params \\ "") do 
+  def uploader(method, resource, action, file,  params \\ "") do 
     params = tuple_pairs(params)
-    upload(method, resource, action, params)
+    # params = tuple_pairs(params)
+    upload(method, resource, action, file, params)
   end
 
 
@@ -63,7 +63,7 @@ defmodule Tweetex do
     api_client.fetcher(method, request) |> body 
   end
 
-  def upload(method, object, action, params \\ []) do
+  def upload(method, object, action, file, params \\ []) do
     
   end
 end

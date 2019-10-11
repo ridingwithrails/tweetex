@@ -1,4 +1,4 @@
-defmodule Tweetex.Upload do
+defmodule Tweetex.UploadActions do
 	import Tweetex.Oauth 
 	import Tweetex.Helpers
 	import Tweetex.Client 
@@ -45,14 +45,6 @@ defmodule Tweetex.Upload do
 		resource = resource_builder("media", "upload", @host)
 		request = build_request("get", resource, params)
 		fetcher("get", request) |> body
-	end
-
-	def split_append(media_id, file) do		
-		IO.puts "Spliting #{file} into chunks"
-		output_dir = split(file) 		
-		get_range(output_dir)
-			|> Enum.each(fn segment -> append(media_id, segment, output_dir) end)
-		File.rm_rf output_dir	
 	end
 
 	def split(file, media_id) do 		

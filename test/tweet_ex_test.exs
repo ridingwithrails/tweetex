@@ -24,13 +24,13 @@ defmodule TweetexTest do
         |> expect(:fetcher, fn _method, _request ->
           {:ok, %{body: "\"ok\""} }
         end)
-      data = ["--method",  "post", "--resource", "statuses", "--action", "update", "--params", "[\"status\", \"Been thinking about this alog\"]"]   
+      data = ["--method",  "post", "--resource", "statuses", "--action", "update", "--params", "status=Been thinking about this alog"]   
       result = Tweetex.main(data)
       assert result == {:ok, "ok"}
     end
 
     test "Options for Uploader" do
-      data = ["--method",  "post", "--resource", "statuses", "--type", "uploader" ,"--action", "update", "--params", "[\"status\", \"Been thinking about this alog\"]"]   
+      data = ["--method",  "post", "--resource", "statuses", "--type", "uploader" ,"--action", "update", "--params", "status=Been thinking about this alog"]   
       result = Tweetex.main(data)
       assert result == {:ok, "ok"}
     end
