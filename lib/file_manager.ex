@@ -1,7 +1,17 @@
 defmodule Tweetex.FileManager do  
+	@behaviour Tweetex.FileManagerBehavior
 	@stage  "./stage"
 	@output "./tmp"
-	
+
+	def io(), do: Application.get_env(:tweetex, :io)
+
+	def file_size(file) do
+		case io.stat(file) do
+			 {:ok, %{size: size}} -> size
+			 {:error, error} -> "Woops got an Error #{error}"
+	  end
+	end
+
 	def split(file)  do
 		output_dir = split_directory(file)
 		File.stream!("#{@stage}/#{file}", [],  4999990) 			 

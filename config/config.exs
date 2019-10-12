@@ -20,8 +20,10 @@ config :tweetex, version: System.get_env("TWTAPI_VERSION")
 
 if Mix.env == :test do
 	config :tweetex, client: Tweetex.ClientBehaviorMock
+	config :tweetex, io: Tweetex.IoBehaviorMock
 else 
 	config :tweetex, client: Tweetex.Client
+	config :tweetex, io: Tweetex.Io
 end
 
 config :mime, :types, %{"application/vnd.api+json" => ["json-api"]}

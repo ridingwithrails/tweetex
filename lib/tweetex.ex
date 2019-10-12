@@ -1,9 +1,10 @@
 defmodule Tweetex do
-  #import Tweetex.Client # allows me to call functions without prefix on it.
   import Tweetex.Oauth
   import Tweetex.Helpers
   import Tweetex.Payload
 
+  # THis grabs the behavior we want from the config file.
+  # easier to test.
   def api_client(), do: Application.get_env(:tweetex, :client)
 
   @doc """
@@ -24,12 +25,11 @@ defmodule Tweetex do
     case opts do
       {[method: method, resource: resource, action: action, params: params],_,_} ->        
         performer(method, resource, action, params)
-      {[method: method, resource: resource, file: type, action: action, params: params],_,_} ->
-        uploader(method, resource, action, params)
+      {[method: method, resource: resource, action: action, file: file,],_,_} ->
+        uploader(method, resource, action, file)
       {[method: method, resource: resource, action: action],_,_} ->
         performer(method, resource, action)        
-       #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"
-       {[params: params],_,_} -> String.split(params, " ") |> IO.inspect
+       #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"       
        {_,_,_} -> "In correct params sent"
     end
   end
@@ -41,9 +41,8 @@ defmodule Tweetex do
   
 
   def uploader(method, resource, action, file,  params \\ "") do 
-    params = tuple_pairs(params)
-    # params = tuple_pairs(params)
-    upload(method, resource, action, file, params)
+    
+    {:ok, "upload done!"}
   end
 
 
@@ -61,9 +60,5 @@ defmodule Tweetex do
     resource = resource_builder(object, action)
     request = build_request(method, resource, params)
     api_client.fetcher(method, request) |> body 
-  end
-
-  def upload(method, object, action, file, params \\ []) do
-    
   end
 end
