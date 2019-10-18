@@ -43,4 +43,11 @@ defmodule Tweetex.Helpers do
     |> Enum.chunk_every(2)
     |> Enum.map(fn pair -> List.to_tuple(pair) end )
   end
+
+  def encode_params(params) do 
+    case Poison.encode(params) do
+      {:ok, json} -> json
+      {:error, _, _ } -> ""        
+    end
+	end
 end

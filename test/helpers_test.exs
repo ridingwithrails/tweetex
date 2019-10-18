@@ -26,4 +26,10 @@ defmodule HelpersTest do
 			assert [] == tuple_pairs
 		end
 	end
+
+	describe "encode params" do
+		test "takes params and returns json" do
+			assert "[\"big\",\"think\"]" == encode_params(["big", "think"])
+		end
+	end
 end
