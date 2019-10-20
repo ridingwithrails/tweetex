@@ -1,15 +1,6 @@
 defmodule Tweetex.Helpers do 
-	@doc """
-  Formats params that comes in to be sent to api
 
-    iex(2)> Tweetex.parse_params("[\\"ok\\", \\"Valid\\"]")
-    [{"ok", "Valid"}]
-
-    iex(4)> Tweetex.parse_params("")
-    []
-
-  """
- @type_map %{
+  @type_map %{
   "video/mp4" => "tweet_video",
   "image/jpg" => "tweet_image",
   "image/png" => "tweet_image",
@@ -28,6 +19,17 @@ defmodule Tweetex.Helpers do
         |> transform_to_tuple
     end    
   end
+  
+  @doc """
+  Formats params that comes in to be sent to api
+
+    iex(2)> Tweetex.Helpers.parse_params("[\\"ok\\", \\"Valid\\"]")
+    [{"ok", "Valid"}]
+
+    iex(4)> Tweetex.Helpers.parse_params("")
+    []
+
+  """
 
   def parse_params(params \\ " ") do
     case Poison.decode(params) do
@@ -49,5 +51,24 @@ defmodule Tweetex.Helpers do
       {:ok, json} -> json
       {:error, _, _ } -> ""        
     end
+  end
+
+@doc """
+  form takes a struct and inflates a Map that will be used to perform a mutli-form post.
+"""
+
+	def form(form_data) do
+		[
+			{"media", IO.iodata_to_binary(form_data.data),
+				{"form-data", [
+					{"name", "\"media\""},
+					{"filename", "\"#{form_data.segment}.#{form_data.extension}\""},
+					{"media_id", form_data.media_id},
+					{"command", "APPEND"},
+					{"segment_index", form_data.segment}]},
+			[{"Content-Type", form_data.mime}]
+			}
+		]
 	end
+
 end

@@ -5,7 +5,7 @@ defmodule Tweetex do
 
   # THis grabs the behavior we want from the config file.
   # easier to test.
-  def api_client(), do: Application.get_env(:tweetex, :client)
+  def api_client, do: Application.get_env(:tweetex, :client)
 
   @doc """
   main is the start of cli to hit twitter.

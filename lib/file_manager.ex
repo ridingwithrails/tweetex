@@ -1,5 +1,4 @@
-defmodule Tweetex.FileManager do  
-	@behaviour Tweetex.FileManagerBehavior
+defmodule Tweetex.FileManager do  	
 	@stage  "./stage"
 	@output "./tmp"
 
