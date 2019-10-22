@@ -28,7 +28,7 @@ defmodule TweetexTest do
               "--resource", "statuses", 
               "--action", "update", 
               "--params", 
-              "status=Been thinking about this alog"]   
+              "status||Been thinking about this along"]   
       result = Tweetex.main(data)
       assert result == {:ok, "ok"}
     end

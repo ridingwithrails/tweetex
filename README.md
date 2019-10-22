@@ -62,7 +62,7 @@ Grab Favorites:
 Post a tweet!
 
 ```
-./tweetex --method "post" --resource "statuses" --action "update" --params "status=Been thinking about this alog"
+./tweetex --method "post" --resource "statuses" --action "update" --params "status||Been thinking about this alog||media_ids||1186511864487743489"
 ```
 
 Get Trends

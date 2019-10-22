@@ -17,7 +17,7 @@ defmodule HelpersTest do
 
 	describe "Params parse to tuple pairs" do
 		test "two strings" do
-			assert [{"id", "123"}] == tuple_pairs("id=123")
+			assert [{"id", "123"}] == tuple_pairs("id||123")
 		end
 
 		test "one string" do

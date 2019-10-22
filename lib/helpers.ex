@@ -15,7 +15,7 @@ defmodule Tweetex.Helpers do
     cond do 
       params == "" -> []
       true -> params 
-        |> String.split("=")
+        |> String.split("||")
         |> transform_to_tuple
     end    
   end
