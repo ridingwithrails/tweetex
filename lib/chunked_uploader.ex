@@ -7,24 +7,32 @@ defmodule Tweetex.ChunkedUploader do
 		media_id = Map.get media_data, "media_id"
 		split(file, media_id)
 		finalize(media_id)
-		find_status(media_id)
-		# Need to implement a status mechanism here.
+		find_status(media_id)		
 	end
 
 	def find_status(media_id) do
 		Process.sleep(1000)
 		media_data = status(media_id)
 		case processing?(media_data) do
-			true  -> find_status(media_data)
+			true  -> find_status(media_id)
 			false -> media_data
 		end
 	end
 	
 	def processing?(media_data) do 
-		{:ok, data} = media_data
-		state = data 
+		{:ok, data} = media_data		
+		state(data) != "succeeded"
+	end
+
+	@doc """
+	Extracts state from payload given payload.
+	"""
+
+	def state(data) do
+		data
 			|> Map.get("processing_info") 
 			|> Map.get("state")
-			state == "succeeded" 
 	end
+
+
 end
