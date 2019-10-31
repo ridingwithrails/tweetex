@@ -33,6 +33,4 @@ defmodule Tweetex.ChunkedUploader do
 			|> Map.get("processing_info") 
 			|> Map.get("state")
 	end
-
-
 end

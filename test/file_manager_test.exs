@@ -22,10 +22,9 @@ defmodule FileManagerTest do
         |> expect(:stat, fn _path ->
           {:error, "eeonent" }
         end)
-			size = file_size("a file")
-			assert size == "Woops got an Error eeonent"
+			assert_raise RuntimeError, "Got the following error eeonent",  fn ->
+			 file_size("a file")
+			end
 		end
-
 	end
-
 end

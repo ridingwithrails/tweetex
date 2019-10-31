@@ -1,19 +1,18 @@
 defmodule Tweetex.FileManager do  	
-	@stage  "./stage"
 	@output "./tmp"
-
+	
 	def io(), do: Application.get_env(:tweetex, :io)
 
 	def file_size(file) do
 		case io.stat(file) do
 			 {:ok, %{size: size}} -> size
-			 {:error, error} -> "Woops got an Error #{error}"
+			 {:error, error} -> raise "Got the following error #{error}"
 	  end
 	end
 
 	def split(file)  do
 		output_dir = split_directory(file)
-		File.stream!("#{@stage}/#{file}", [],  4999990) 			 
+		File.stream!("#{file}", [],  4999990) 			 
 			|> Stream.with_index 
 			|> Stream.each(		
 					fn({data, chunk_id}) -> {:ok, file} = File.open("#{output_dir}/#{chunk_id}.tmp",[:write] )

@@ -5,27 +5,24 @@ defmodule Tweetex.UploadActions do
 	import Tweetex.Payload
 	import Tweetex.FileManager
 
-	@stage  "./stage"
-	@host "https://upload.twitter.com/"
-	@version "1.1"
-	@method "post"
+	@host  Application.get_env(:tweetex, :upload_url)
+	@version Application.get_env(:tweetex, :version)
 
+	def init(file), do: fetcher("post", build_init_request(file))	|> body
 
-	def init(file) do
+	def build_init_request(file) do
 		params = init_data(file)
 			|> encode_params
 			|> parse_params
 		resource = resource_builder("media", "upload", @host)
-		request = build_request(@method, resource, params)
-		# HTTPoison.post(request.resource, [], request.header, params: request.params) |> body
-		fetcher(@method, request)	|> body
+		build_request("post", resource, params)
 	end
 
 	def init_data(file) do
 		[
 			"media_type", MIME.from_path("#{file}"),
 		  "media_category", media_category("#{file}"),
-			"total_bytes", file_size("./stage/#{file}"),
+			"total_bytes", file_size("#{file}"),
 			"command", "INIT"
 		]
 	end
@@ -35,8 +32,8 @@ defmodule Tweetex.UploadActions do
 			|> encode_params
 			|> parse_params
 		resource = resource_builder("media", "upload", @host)
-		request = build_request(@method, resource, params)
-		fetcher(@method, request)	|> body
+		request = build_request("post", resource, params)
+		fetcher("post", request)	|> body
 	end
 
 	def finalize_data(media_id) do
@@ -65,7 +62,7 @@ defmodule Tweetex.UploadActions do
 	def split(file, media_id) do
 		ext = extension(file)
 		mime = MIME.from_path("#{file}")		
-		File.stream!("#{@stage}/#{file}", [],  4999990)
+		File.stream!("#{file}", [],  4999990)
 			|> Stream.with_index
 			|> Stream.each(
 					fn({data, segment}) -> append(media_id, segment, data, ext, mime)
@@ -86,7 +83,7 @@ defmodule Tweetex.UploadActions do
 			|> encode_params
 			|> parse_params
 		resource = resource_builder("media", "upload", @host)
-		request = build_request(@method, resource, params)
+		request = build_request("post", resource, params)
 		form_data = %{
 			data: data, 
 			segment: segment,
@@ -94,6 +91,6 @@ defmodule Tweetex.UploadActions do
 			mime: mime,
 			media_id: media_id
 		}
-		fetcher(@method, request, form(form_data)) |> status_code
+		fetcher("post", request, form(form_data)) |> status_code
 	end
 end
