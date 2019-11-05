@@ -22,9 +22,11 @@ config :tweetex, upload_url: System.get_env("TWTAPI_UPLOAD_URL")
 if Mix.env == :test do
 	config :tweetex, client: Tweetex.ClientBehaviorMock
 	config :tweetex, io: Tweetex.IoBehaviorMock
+	config :tweetex, uploader: Tweetex.UploadBehaviorMock
 else 
 	config :tweetex, client: Tweetex.Client
 	config :tweetex, io: Tweetex.Io
+	config :tweetex, uploader: Tweetex.ChunkedUploader
 end
 
 config :mime, :types, %{"application/vnd.api+json" => ["json-api"]}

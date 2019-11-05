@@ -7,6 +7,9 @@ defmodule Tweetex do
   # easier to test.
   def api_client, do: Application.get_env(:tweetex, :client)
 
+  def api_uploader, do: Application.get_env(:tweetex, :uploader)
+
+
   @doc """
   main is the start of cli to hit twitter.
 
@@ -25,8 +28,8 @@ defmodule Tweetex do
     case opts do
       {[method: method, resource: resource, action: action, params: params],_,_} ->        
         performer(method, resource, action, params)
-      {[method: method, resource: resource, action: action, file: file,],_,_} ->
-        uploader(method, resource, action, file)
+      {[file: file,],_,_} ->
+        uploader(file)
       {[method: method, resource: resource, action: action],_,_} ->
         performer(method, resource, action)        
        #./tweetex --method "get" --resource "statuses" --action "lookup" --params "[\"id\", 2121]"       
@@ -39,9 +42,12 @@ defmodule Tweetex do
     perform(method, resource, action, params)
   end
   
+  @doc """
+  If a file is passed it will be matched to the 
+  """
 
-  def uploader(method, resource, action, file,  params \\ "") do 
-    
+  def uploader(file) do 
+    api_uploader.work(file)
     {:ok, "upload done!"}
   end
 

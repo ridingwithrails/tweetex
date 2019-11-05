@@ -22,7 +22,7 @@ defmodule Tweetex.FileManager do
 		output_dir		
 	end
 
-	def split_append(media_id, file) do		
+	def split_append(file) do		
 		IO.puts "Spliting #{file} into chunks"
 		output_dir = split(file) 		
 		get_range(output_dir)

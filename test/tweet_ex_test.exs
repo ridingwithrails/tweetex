@@ -34,10 +34,11 @@ defmodule TweetexTest do
     end
 
     test "Options for Uploader" do
-      data = ["--method",  "post", 
-              "--resource", "media", 
-              "--action", "upload", 
-              "--file", "/test.gif"]   
+      Tweetex.UploadBehaviorMock
+      |> expect(:work, fn _file ->
+        {:ok, %{body: "\"ok\""} }
+      end)
+      data = ["--file", "/test.gif"]   
       result = Tweetex.main(data)
       assert result == {:ok, "upload done!"}
     end

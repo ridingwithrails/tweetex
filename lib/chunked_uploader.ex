@@ -1,4 +1,6 @@
 defmodule Tweetex.ChunkedUploader do
+	@behaviour Tweetex.UploadBehavior
+
 	import Tweetex.UploadActions
 
 	# Going to work on this some more this is not final .

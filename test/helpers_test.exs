@@ -25,7 +25,7 @@ defmodule HelpersTest do
 		end
 
 		test "nothing passed" do
-			assert [] == tuple_pairs
+			assert [] == tuple_pairs()
 		end
 	end
 
